@@ -1,0 +1,52 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: ecommerce_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  airflow:
+    image: apache/airflow:2.10.5
+    container_name: ecommerce_airflow
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "sqlite:////opt/airflow/airflow.db"
+
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/config:/opt/airflow/config
+      - ../ingestion:/opt/airflow/ingestion
+      - ../spark:/opt/airflow/spark
+      - ../tests:/opt/airflow/tests
+      - ./airflow/requirements.txt:/opt/airflow/requirements.txt
+
+    command: >
+      bash -c "
+      pip install -r /opt/airflow/requirements.txt &&
+      airflow standalone
+      "
+
+
+volumes:
+  postgres_data:
+  

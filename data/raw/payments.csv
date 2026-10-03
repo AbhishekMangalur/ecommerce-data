@@ -1,0 +1,8 @@
+payment_id,order_id,payment_method,payment_status,amount
+PAY001,O001,UPI,Success,65000
+PAY002,O002,Credit Card,Success,2400
+PAY003,O003,UPI,Success,2500
+PAY004,O004,Debit Card,Success,7000
+PAY005,O005,UPI,Success,8500
+PAY006,O006,Credit Card,Success,3600
+PAY007,O007,UPI,Failed,65000
